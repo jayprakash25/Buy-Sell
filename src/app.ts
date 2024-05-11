@@ -25,5 +25,8 @@ app.use(passport.session());
 import { userRouter } from "./routes/userRoute";
 app.use("/users", userRouter);
 
-const port = process.env.PORT || 3000;
+app.get('/', async(req,res)=> {
+res.send('Hello World!');
+})
+const port = 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
