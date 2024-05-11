@@ -1,6 +1,7 @@
 import express from 'express';
 import { pool } from '../database/connection';
 import bcrypt from 'bcrypt';
+import passport from 'passport';
 
 export const handleRegister = async(req: express.Request, res: express.Response) => {
     const { username, password } = req.body; 
@@ -22,18 +23,22 @@ export const handleRegister = async(req: express.Request, res: express.Response)
         res.status(500).json({ error: (error as Error).message });
     }   
 }
+export const handleLogin = passport.authenticate("local", {
+    successRedirect: "/users/login-success",
+    failureRedirect: "/users/login",
+    // failureFlash: true,
+});
 
-export const handleLogin = async(req: express.Request, res: express.Response) => {
-    const { username, password } = req.body;
-    const user = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
-    if(!user.rows[0]){
-        return res.status(400).json({ message: "User not found" });
-    }
 
-    const isValid = await bcrypt.compare(password, user.rows[0].password);
-    if(isValid){
-        return res.json({ message: "Login successful" });
-    } else {
-        return res.status(400).json({ message: "Invalid username or password" });
-    }
-}
+
+// export const handleLogin = async(req: express.Request, res: express.Response) => {
+//     const { username, password } = req.body;
+//     const user = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+//     if(!user.rows[0]){
+//         return res.status(400).json({ message: "User not found" });
+//     }
+
+//     if(isValid){
+//         return res.json({ message: "Login successful" });
+//     } else {
+   

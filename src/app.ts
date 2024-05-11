@@ -5,6 +5,7 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
+import "./services/authService";
 
 const app = express();
 
@@ -21,12 +22,21 @@ app.use(session({ secret: "secret", resave: false, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, res, next) => {
+    console.log(req.session);
+    console.log(req.user);
+    next();
+})
+
 //routes
 import { userRouter } from "./routes/userRoute";
 app.use("/users", userRouter);
 
 app.get('/', async(req,res)=> {
-res.send('Hello World!');
+res.send('Hello World!s');
+})
+app.get('/users/login-success', async(req,res)=> {
+res.send('Login successful');
 })
 const port = 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
